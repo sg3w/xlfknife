@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="demo.simple">
+        <body>
+            <trans-unit id="gender.0">
+                <source>Mister</source>
+            </trans-unit>
+            <trans-unit id="gender.1">
+                <source>Miss</source>
+                <target>Frau</target>
+            </trans-unit>
+
+            <trans-unit id="test-cdata">
+                <source><![CDATA[<h1>test</h1>]]></source>
+            </trans-unit>
+            <trans-unit id="test-html">
+                <source>34<h1 class="text">test</h1>56</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
