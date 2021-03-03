@@ -4,8 +4,8 @@
 const convert = require('xml-js');
 //const Bottleneck = require('bottleneck/es5');
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
+//const jsdom = require("jsdom");
+//const { JSDOM } = jsdom;
 
 const log = require('./helpers/log');
 //const match = require('./helpers/text-matcher');
@@ -71,47 +71,7 @@ async function exportXlf(input, format) {
             }*/
             var targetValue = target ? xmlElement2String(target) : '';
             var sourceValue = source ? xmlElement2String(source) : '';
-            if (source) {
-               // const sourceValue =
-                //log(source)
 
-
-                //sourceValue = xmlElement2String(source);
-                /*
-                source.elements.forEach(el => {
-                    if (el.type === 'text') {
-
-                        sourceValue += el.text;
-
-                        //log(sourceValue)
-                    }else if(el.type === 'cdata'){
-                        //log(el)
-                        sourceValue += el.cdata;
-                    }
-
-
-                    else{
-                        log(el.type)
-                    }
-                });
-*/
-                /*
-                const target = cloneDeep(source);
-                target.name = 'target';
-
-                target.elements.forEach(el => {
-                    if (el.type === 'text' && !match(el.text)) {
-                        if (skip) {
-                            el.text = '[INFO] Add your translation here'
-                        } else {
-                            targetsQueue.push(el);
-                        }
-                    }
-                });
-
-                elem.elements.push(target);
-                                */
-            }
 
             exportData.push({id:id,source:sourceValue,target:targetValue});
 
@@ -151,36 +111,31 @@ function xmlElement2String(xmlNode){
     var sourceValue='';
     if(xmlNode.elements){
         xmlNode.elements.forEach(el => {
+
+            var options = {compact: false, ignoreComment: false, spaces: 4};
+            var elements = {elements:[el]}
+            sourceValue += convert.json2xml(elements,options);
+
             //log(el)
+            /*
             if (el.type === 'text') {
 
                 sourceValue += el.text;
 
                 //log(sourceValue)
-            }else if(el.type === 'cdata'){
-
-                sourceValue += el.cdata;
-            }else if(el.type === 'element'){
-                var options = {compact: false, ignoreComment: true, spaces: 4};
-                log('-----')
-                log(el);
+            }else if(el.type === 'element' || el.type === 'cdata'){
+                var options = {compact: false, ignoreComment: false, spaces: 4};
                 var elements = {elements:[el]}
-                log(convert.js2xml(elements,options))
-                log('-----')
-                log(convert.json2xml(elements,options))
-                //sourceValue += xmlElement2String(el);
-
                 sourceValue += convert.json2xml(elements,options);
-                log('-----')
-            }
 
 
             else{
                 //log(el.type)
-            }
+            }            }
+        */
         });
     }
-    log(sourceValue)
+   // log(sourceValue)
     return sourceValue;
 }
 
