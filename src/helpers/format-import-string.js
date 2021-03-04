@@ -1,5 +1,44 @@
 const log = require('./log');
 
+
+function formatImportStringToTranslationObj(content,type){
+
+    switch (type){
+        case 'csv':
+            return formatImportCsvStringToTranslationObj(content);
+            break;
+        case 'xlf':
+            return formatXlfStringToTranslationObj(content);
+            break;
+        case 'po':
+            return formatPoStringToTranslationObj(content);
+            break;
+        default:
+            //throw ;
+            throw new Error("Wrong input format of the source file. Input-Format: "+type); //inside callback
+            break;
+    }
+
+}
+function formatPoStringToTranslationObj(poString) {
+    var PO = require('pofile');
+
+    var poObject = PO.parse(poString);
+    var tanslate =[];
+    poObject.items.forEach(itm => {
+        tanslate.push({id: itm.msgid, target: itm.msgstr.join('')});
+    })
+    log(tanslate)
+    log(poObject)
+    return tanslate;
+}
+
+function formatImportXlfStringToTranslationObj(xmlString){
+    const exportXlf = require('../exportXlf');
+    //log(xmlString);
+    return exportXlf(xmlString);
+}
+
 /**
  * CSV file format
  *
@@ -55,4 +94,4 @@ function formatExportJs(translateObj) {
     return JSON.stringify(translateObj);
 }
 
-module.exports = { formatImportCsvStringToTranslationObj };
+module.exports = { formatImportStringToTranslationObj, formatImportCsvStringToTranslationObj };
