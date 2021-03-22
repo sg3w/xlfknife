@@ -34,9 +34,9 @@ function formatPoStringToTranslationObj(poString) {
 }
 
 function formatXlfStringToTranslationObj(xmlString){
-    const exportXlf = require('../exportXlf');
+    const {convertXlf2Object} = require('../exportXlf');
     //log(xmlString);
-    return exportXlf(xmlString);
+    return convertXlf2Object(xmlString);
 }
 
 /**

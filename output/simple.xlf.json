@@ -1,0 +1,1 @@
+[{"id":"gender.0","source":"Mister","target":""},{"id":"gender.1","source":"Miss","target":"Frau"},{"id":"test-cdata","source":"<![CDATA[<h1>test</h1>]]>","target":""},{"id":"test-html","source":"34<h1 class=\"text\">test</h1>\n                    56","target":""},{"id":"test-json","source":"{id:'22',list:[1,2,3],obj:{name:'xyz'}}","target":""}]

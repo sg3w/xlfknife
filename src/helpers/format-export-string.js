@@ -8,25 +8,11 @@ const log = require('./log');
  */
 function formatExportCsv(translateObj) {
     const CSV = require('csv-string');
-    //translateObj.forEach(row => {
-    //log(CSV.stringify(translateObj));
-    //return CSV.stringify(translateObj);
-
-    //var lines = ;
-
     var lines = [];
     translateObj.forEach(row => {
         lines.push([row.id,row.source,row.target]);
     });
-    return CSV.stringify(lines,';')
-    /*
-    translateObj.forEach(row => {
-        content += '"' + [row.id,row.source,row.target].join('";"') + '"\n';
-    });
-    return content;
-*/
-    const arrayToCSV = (translateObj, delimiter = ',') => translateObj.map(v => v.map(x => `"${x}"`).join(delimiter)).join('\n');
-    return arrayToCSV;
+    return CSV.stringify(lines,';');
 }
 
 /**

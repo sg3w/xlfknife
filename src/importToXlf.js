@@ -99,9 +99,6 @@ async function reportkeysTrnslObjects(input, trnslObj) {
     return missingIDs;
 }
 
-
-
-
 function createJsDomElement(tObj) {
     var tOs = '<trans-unit id="' + tObj.id + '">';
     if(tObj.source ) tOs +='<source>' + tObj.source + '</source>';
@@ -109,13 +106,22 @@ function createJsDomElement(tObj) {
         tOs +='<target>' + tObj.target + '</target>';
     }else{
         tOs +='<target state="needs-translation"></target>';
-
     }
     tOs +='</trans-unit>';
     const o = convert.xml2js(tOs);
     return o.elements[0];
 }
 
-//module.exports = importTrnslObjToXlf;
 
-module.exports = { importTrnslObjToXlf , reportkeysTrnslObjects };
+function getEmptyXlfFile(){
+    var filecontent =  '<?xml version="1.0" encoding="utf-8" standalone="yes"?>\n' +
+        '<xliff version="1.0">\n' +
+        '    <file source-language="" datatype="plaintext">\n' +
+        '        <body>\n' +
+        '        </body>\n' +
+        '    </file>\n' +
+        '</xliff>';
+    return filecontent;
+}
+
+module.exports = { importTrnslObjToXlf , reportkeysTrnslObjects,getEmptyXlfFile };

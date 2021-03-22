@@ -1,0 +1,6 @@
+gender.0;Mister;
+gender.1;Miss;Frau
+test-cdata;<![CDATA[<h1>test</h1>]]>;
+test-html;"34<h1 class=""text"">test</h1>
+                    56";
+test-json;{id:'22',list:[1,2,3],obj:{name:'xyz'}};

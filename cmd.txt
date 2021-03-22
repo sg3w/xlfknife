@@ -1,1 +1,4 @@
  node ./src/index.js export ./examples/simple.xlf  --out22 ./dump/test.csv --format php
+
+node ./src/index.js export ./examples/simple.xlf -o ./output/simple.xlf.csv
+node ./src/index.js export ./examples/simple.xlf -o ./output/simple.xlf.json --format json

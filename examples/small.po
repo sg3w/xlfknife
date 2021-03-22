@@ -1,7 +1,0 @@
-msgctxt "Dialog title"
-
-msgid "Log in"
-msgstr "Melde dich an"
-
-msgid "Log out"
-msgstr "abmelden"

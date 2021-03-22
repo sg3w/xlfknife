@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="xlfknife.exsample.locllang" target-language="de">
+        <body>
+            <trans-unit id="name">
+                <source>name</source>
+                <target>name</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
