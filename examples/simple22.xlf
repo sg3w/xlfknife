@@ -13,8 +13,14 @@
             <trans-unit id="test-cdata">
                 <source><![CDATA[<h1>test</h1>]]></source>
             </trans-unit>
+
             <trans-unit id="test-html">
-                <source>34<h1 class="text">test</h1>56</source>
+                <source>34<h1 class="text">test</h1>
+                    56</source>
+            </trans-unit>
+
+            <trans-unit id="test-json">
+                <source>{id:'22',list:[1,2,3],obj:{name:'xyz'}}</source>
             </trans-unit>
         </body>
     </file>

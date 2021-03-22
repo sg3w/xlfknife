@@ -33,7 +33,7 @@ function formatPoStringToTranslationObj(poString) {
     return tanslate;
 }
 
-function formatImportXlfStringToTranslationObj(xmlString){
+function formatXlfStringToTranslationObj(xmlString){
     const exportXlf = require('../exportXlf');
     //log(xmlString);
     return exportXlf(xmlString);

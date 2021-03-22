@@ -1,0 +1,43 @@
+{
+  "name": "xlfknife",
+  "version": "0.0.1",
+  "description": "A command-line utility to import and export .xlf files in CSV, PO, JSON, PHP ....",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "mocha",
+    "test:watch": "mocha --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sg3w/xlfknife.git"
+  },
+  "keywords": [
+    "xlf",
+    "angular",
+    "i18n",
+    "multilingual",
+    "angular2",
+    "ng"
+  ],
+  "author": "Anton Cherepov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chekit/xlfknife/issues"
+  },
+  "homepage": "https://github.com/chekit/xlfknife#readme",
+  "preferGlobal": true,
+  "bin": {
+    "xlfknife": "./src/index.js"
+  },
+  "dependencies": {
+    "bottleneck": "2.19.5",
+    "chalk": "2.4.1",
+    "xml-js": "1.6.11",
+    "yargs": "15.3.1"
+  },
+  "devDependencies": {
+    "chai": "4.1.2",
+    "mocha": "7.2.0",
+    "proxyquire": "2.0.1"
+  }
+}
