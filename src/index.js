@@ -38,12 +38,12 @@ const argv = require('yargs')
             })
     })
 
-    .command('import <file> [options]', 'Exports XLF files to *.csv or *.po',(yargs) => {
+    .command('import <file> [options]', 'Imports *.xlf, *.csv or *.po into new or existing XLF files. ',(yargs) => {
         yargs
             .option('source', {
                 demand: true,
                 type: 'string',
-                description: 'Source file for import in xlf. (csv|po)',
+                description: 'Source file for import in xlf. (xlf|csv|po)',
             })
             .option('lang', {
                 demand: true,
@@ -53,13 +53,7 @@ const argv = require('yargs')
             .option('target', {
                 demand: false,
                 type: 'string',
-                description: 'Target file for write xlf.',
-            })
-            .option('format', {
-                demand: false,
-                default:'csv',
-                describe: 'Default: csv. (csv|po|xml|json)',
-                type: 'string',
+                description: 'Target file to write the new xlf.',
             })
         ;
 
