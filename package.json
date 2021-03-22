@@ -27,7 +27,7 @@
   "homepage": "https://github.com/sg3w/xlfknife#readme",
   "preferGlobal": true,
   "bin": {
-    "xlfknife": "./src/index.js"
+    "xlfknife": "src/index.js"
   },
   "dependencies": {
     "bottleneck": "2.19.5",
@@ -40,5 +40,8 @@
     "chai": "4.1.2",
     "mocha": "7.2.0",
     "proxyquire": "2.0.1"
+  },
+  "directories": {
+    "example": "examples"
   }
 }
