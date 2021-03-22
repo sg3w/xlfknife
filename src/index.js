@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const { readFileAsync, writeFileAsync } = require('./helpers/fs-async');
 
 
-const importTrnslObjToXlf = require('./importToXlf');
+const {importTrnslObjToXlf,reportkeysTrnslObjects} = require('./importToXlf');
 
 const exportXlf = require('./exportXlf');
 const log = require('./helpers/log');
@@ -37,6 +37,7 @@ const argv = require('yargs')
                 type: 'string',
             })
     })
+
     .command('import <file> [options]', 'Exports XLF files to *.csv or *.po',(yargs) => {
         yargs
 
@@ -44,6 +45,11 @@ const argv = require('yargs')
                 demand: true,
                 type: 'string',
                 description: 'Source file for import in xlf. (csv|po)',
+            })
+            .option('lang', {
+                demand: true,
+                type: 'string',
+                description: 'ISO2 Language Code',
             })
             .option('target', {
                 demand: false,
@@ -59,6 +65,17 @@ const argv = require('yargs')
         ;
 
     })
+    .command('reportkeys <file> [options]', 'Exports XLF files to *.csv or *.po',(yargs) => {
+        yargs
+            .option('source', {
+                demand: true,
+                type: 'string',
+                description: 'Source file for import in xlf. (csv|po)',
+            })
+
+        ;
+
+    })
     .demandCommand(1, 'You need at least one command before moving on')
     .option('verbose', {
         alias: 'v',
@@ -68,69 +85,6 @@ const argv = require('yargs')
     .help()
     .argv;
 
-/*
-// setup up the command line interface
-const argv = require('yargs')
-    .usage(
-        'xlfknife [command] [options] \nCreate, update, import and export xlf files.'
-    )
-    .example(
-        'xlfknife import ./examples/fr.fromcsv.xlf --source ./dump/test.csv --target ./dump/new.xlf\n',
-        'xlfknife import new --source ./dump/test.csv --target ./dump/new.xlf\n',
-        'xlfknife import new --source ./dump/test.csv --stdOut\n'
-    )
-    .example(
-        'xlf2xlf -i messages.xlf -o messages.fr.xlf -f en -t fr',
-        'Translate an .xlf file from English to French'
-    )
-
-    .command('export <file> [options]', 'Exports XLF files to *.csv or *.po',(yargs) => {
-        yargs
-            .option('format', {
-                demand: false,
-                default:'csv',
-                describe: 'Default: csv. (csv|po|php|js)',
-                type: 'string',
-            })
-            .option('o', {
-                alias: 'out',
-                demand: false,
-                describe: 'The name of the output file',
-                type: 'string',
-            })
-    })
-    .command('import <file> [options]', 'Exports XLF files to *.csv or *.po',(yargs) => {
-         yargs
-
-            .option('source', {
-                demand: true,
-                type: 'string',
-                description: 'Source file for import in xlf. (csv|po)',
-            })
-            .option('target', {
-                demand: false,
-                type: 'string',
-                description: 'Target file for write xlf.',
-            })
-            .option('format', {
-                demand: false,
-                default:'csv',
-                describe: 'Default: csv. (csv|po|xml|json)',
-                type: 'string',
-            })
-            ;
-
-    })
-    .demandCommand(1, 'You need at least one command before moving on')
-    .help('h')
-    //.alias('h', 'help')
-    .argv;
-
-
-*/
-//argv.parse();
-// start a timer so that we can
-// report how long the whole process took
 const startTime = Date.now();
 
 //console.log(argv);
@@ -144,6 +98,33 @@ const startTime = Date.now();
 
 if(argv._.includes('create')){
     console.log('create');
+}else if(argv._.includes('reportkeys')){
+    const{ formatImportStringToTranslationObj }= require('./helpers/format-import-string');
+    readFileAsync(path.resolve(argv.source))
+        .then(filecontent => {
+            //log(fileExtname(argv.source));
+            return formatImportStringToTranslationObj(filecontent.toString(),fileExtname(argv.source))
+        })
+        .then(translationObj => {
+            //log(translationObj);
+            var filecontent = fs.readFileSync(path.resolve(argv.file),'utf8');
+            return reportkeysTrnslObjects(filecontent,translationObj);
+        })
+        .then(output => {
+            //log(output);
+            process.stdout.write(output.join('\n'));
+        })
+        .catch(err => {
+            log(
+                chalk.red('X') +
+                ' Something went wrong while importing ' +
+                argv.source + ' into ' + argv.file +
+                '!'
+            );
+            log('' + err.stack);
+        });
+
+
 }else if(argv._.includes('import')){
     const{ formatImportStringToTranslationObj }= require('./helpers/format-import-string');
     readFileAsync(path.resolve(argv.source))
@@ -166,7 +147,14 @@ if(argv._.includes('create')){
                 var filecontent = fs.readFileSync(path.resolve(argv.file),'utf8');
             }
             //log(filecontent);
-            return importTrnslObjToXlf(filecontent,translationObj);
+
+            const options = {
+                lang:argv.lang,
+                sourceMode:argv.sourceMode,
+                targetMode:argv.targetMode,
+            }
+
+            return importTrnslObjToXlf(filecontent,translationObj,options);
         })
         .then(output => {
             if(argv.target){

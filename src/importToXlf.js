@@ -1,5 +1,6 @@
 const convert = require('xml-js');
 const log = require('./helpers/log');
+const date = require('./helpers/date');
 
 /**
  * Translates an .xlf file from one language to another
@@ -10,7 +11,7 @@ const log = require('./helpers/log');
  * @returns {string}
  */
 
-async function importTrnslObjToXlf(input, trnslObj) {
+async function importTrnslObjToXlf(input, trnslObj,options) {
     const xlfStruct = convert.xml2js(input, {alwaysChildren: true});
     const elementsQueue = [];
     const idsInXlf = [];
@@ -19,12 +20,12 @@ async function importTrnslObjToXlf(input, trnslObj) {
     while (elementsQueue.length) {
         const elem = elementsQueue.shift();
         //log(elem);
-        /*
+
         if (elem.name === 'file') {
-            elem.attributes['target-language'] = to;
+            elem.attributes['target-language'] = options.lang;
             elem.attributes['date'] = date();
         }
-*/
+
         if (elem.name === 'trans-unit') {
             const id = elem.attributes['id'];
             idsInXlf.push(id);
@@ -61,13 +62,60 @@ async function importTrnslObjToXlf(input, trnslObj) {
 
 }
 
+
+async function reportkeysTrnslObjects(input, trnslObj) {
+    const xlfStruct = convert.xml2js(input, {alwaysChildren: true});
+    const elementsQueue = [];
+    const idsInXlf = [];
+    elementsQueue.push(xlfStruct);
+
+    while (elementsQueue.length) {
+        const elem = elementsQueue.shift();
+        if (elem.name === 'trans-unit') {
+            const id = elem.attributes['id'];
+            idsInXlf.push(id);
+            continue;
+        }
+        if (elem && elem.elements && elem.elements.length) {
+            elementsQueue.push(...elem.elements);
+        }
+    }
+    elementsQueue.length = 0
+    elementsQueue.push(xlfStruct);
+    const missingIDs = [];
+    while (elementsQueue.length) {
+        const elem = elementsQueue.shift();
+        if (elem.name === 'body') {
+            trnslObj.forEach(tObj => {
+                if (tObj.id && !idsInXlf.includes(tObj.id)) {
+                    missingIDs.push(tObj.id);
+                }
+            });
+        }
+        if (elem && elem.elements && elem.elements.length) {
+            elementsQueue.push(...elem.elements);
+        }
+    }
+    return missingIDs;
+}
+
+
+
+
 function createJsDomElement(tObj) {
     var tOs = '<trans-unit id="' + tObj.id + '">';
     if(tObj.source ) tOs +='<source>' + tObj.source + '</source>';
-    if(tObj.target ) tOs +='<target>' + tObj.target + '</target>';
+    if(tObj.target ) {
+        tOs +='<target>' + tObj.target + '</target>';
+    }else{
+        tOs +='<target state="needs-translation"></target>';
+
+    }
     tOs +='</trans-unit>';
     const o = convert.xml2js(tOs);
     return o.elements[0];
 }
 
-module.exports = importTrnslObjToXlf;
+//module.exports = importTrnslObjToXlf;
+
+module.exports = { importTrnslObjToXlf , reportkeysTrnslObjects };

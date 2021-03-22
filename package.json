@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "bottleneck": "2.19.5",
-    "chalk": "2.4.1",
+    "chalk": "^2.4.1",
     "xml-js": "1.6.11",
     "yargs": "15.3.1"
   },
