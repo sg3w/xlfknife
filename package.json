@@ -22,9 +22,9 @@
   "author": "Anton Cherepov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chekit/xlfknife/issues"
+    "url": "https://github.com/sg3w/xlfknife/issues"
   },
-  "homepage": "https://github.com/chekit/xlfknife#readme",
+  "homepage": "https://github.com/sg3w/xlfknife#readme",
   "preferGlobal": true,
   "bin": {
     "xlfknife": "./src/index.js"
