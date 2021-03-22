@@ -1,7 +1,7 @@
 {
   "name": "xlfknife",
-  "version": "0.0.2",
-  "description": "A command-line utility to import and export .xlf files in CSV, PO, JSON, PHP ....",
+  "version": "0.0.3",
+  "description": "A command-line utility to import/merge or export *.xlf files in XLF, CSV, PO, JSON, PHP ....",
   "main": "./src/index.js",
   "scripts": {
     "test": "mocha",
@@ -13,13 +13,21 @@
   },
   "keywords": [
     "xlf",
+    "xliff",
     "angular",
-    "i18n",
-    "multilingual",
-    "angular2",
-    "ng"
+    "i10n",
+    "merge",
+    "tool",
+    "import",
+    "export",
+    "po",
+    "csv",
+    "json",
+    "language",
+    "multilingual"
+
   ],
-  "author": "Anton Cherepov",
+  "author": "Jörg Hammel",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sg3w/xlfknife/issues"
