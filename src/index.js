@@ -7,8 +7,8 @@ const chalk = require('chalk');
 const { readFileAsync, writeFileAsync } = require('./helpers/fs-async');
 
 const {importTrnslObjToXlf,reportkeysTrnslObjects,getEmptyXlfFile} = require('./importToXlf');
-
 const {convertXlf2Object} = require('./exportXlf');
+
 const log = require('./helpers/log');
 const fs = require('fs');
 
@@ -50,6 +50,16 @@ const argv = require('yargs')
                 type: 'string',
                 description: 'ISO2 Language Code',
             })
+            .option('merge', {
+                demand: false,
+                type: 'string',
+                description: 'Merge source/target2source in new xlf',
+            })
+            .option('sourceLanguage', {
+                demand: false,
+                type: 'string',
+                description: 'The source language in the new xlf',
+            })
             .option('target', {
                 demand: false,
                 type: 'string',
@@ -61,9 +71,15 @@ const argv = require('yargs')
     .command('reportkeys <file> [options]', 'Report missing keys to stdout',(yargs) => {
         yargs
             .option('source', {
-                demand: true,
+                demand: false,
                 type: 'string',
                 description: 'Source file for import in xlf. (csv|po)',
+            })
+            .option('mode', {
+                demand: false,
+                type: 'string',
+                default: 'missing',
+                description: 'which keys should be displayed (missing|file|source|all)',
             })
 
         ;
@@ -85,10 +101,10 @@ if(argv._.includes('create')){
         })
         .then(translationObj => {
             var filecontent = fs.readFileSync(path.resolve(argv.file),'utf8');
-            return reportkeysTrnslObjects(filecontent,translationObj);
+            return reportkeysTrnslObjects(filecontent,translationObj,argv.mode);
         })
         .then(output => {
-            process.stdout.write(output.join('\n'));
+            process.stdout.write(output.join('\n')+ '\n');
         })
         .catch(err => {
             log(
@@ -116,7 +132,9 @@ if(argv._.includes('create')){
                 filecontent = fs.readFileSync(path.resolve(argv.file),'utf8');
             }
             const options = {
-                lang:argv.lang
+                lang:argv.lang,
+                merge:argv.merge,
+                sourceLanguage:argv.sourceLanguage
             }
             return importTrnslObjToXlf(filecontent,translationObj,options);
         })
@@ -170,7 +188,7 @@ if(argv._.includes('create')){
             log(
                 chalk.red('X') +
                 ' Something went wrong while exporting ' +
-                argv.in +
+                argv.file +
                 '!'
             );
             log('' + err.stack);

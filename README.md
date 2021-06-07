@@ -1,6 +1,6 @@
 # xlfknife
 
-A command-line utility to import and export xlf files. 
+A command-line utility to import/merge or export *.xlf files in XLF, CSV, PO, JSON, PHP ....
 
 **DISCLAIMER**
 This Software is pre-alpha 

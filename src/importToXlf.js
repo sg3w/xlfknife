@@ -1,7 +1,8 @@
 const convert = require('xml-js');
 const log = require('./helpers/log');
 const date = require('./helpers/date');
-
+const XmlWalker = require('./class/XmlWalker.js');
+const xmlWalker = new XmlWalker();
 /**
  * Translates an .xlf file from one language to another
  *
@@ -12,35 +13,22 @@ const date = require('./helpers/date');
  */
 
 async function importTrnslObjToXlf(input, trnslObj,options) {
-    const xlfStruct = convert.xml2js(input, {alwaysChildren: true});
-    const elementsQueue = [];
-    const idsInXlf = [];
-    elementsQueue.push(xlfStruct);
-
-    while (elementsQueue.length) {
-        const elem = elementsQueue.shift();
-        //log(elem);
-
+    xmlWalker.xml2js(input);
+    const idsInXlf = xmlWalker.walk(function(elem){
         if (elem.name === 'file') {
             elem.attributes['target-language'] = options.lang;
             elem.attributes['date'] = date();
+            if(options.sourceLanguage){
+                elem.attributes['source-language'] = options.sourceLanguage;
+            }
         }
-
         if (elem.name === 'trans-unit') {
-            const id = elem.attributes['id'];
-            idsInXlf.push(id);
-            continue;
+            return elem.attributes['id'];
         }
-        if (elem && elem.elements && elem.elements.length) {
-            elementsQueue.push(...elem.elements);
-        }
-    }
-
-    elementsQueue.length = 0
-    elementsQueue.push(xlfStruct);
-
-    while (elementsQueue.length) {
-        const elem = elementsQueue.shift();
+        return false;
+    });
+   // log(trnslObj);
+    xmlWalker.walk(function(elem){
         if (elem.name === 'body') {
             trnslObj.forEach(tObj => {
                 if (tObj.id && !idsInXlf.includes(tObj.id)) {
@@ -48,55 +36,76 @@ async function importTrnslObjToXlf(input, trnslObj,options) {
                 }
             });
         }
-        if (elem && elem.elements && elem.elements.length) {
-            elementsQueue.push(...elem.elements);
-        }
+        return true;
+    });
+
+
+    if(options.merge != undefined ){
+        xmlWalker.walk(function(elem){
+            if ( elem.name === 'trans-unit') {
+                var newSource = false
+                trnslObj.forEach(tObj => {
+                    if (tObj.id == elem.attributes['id']) {
+                        const sourceObj = (options.merge=='target2source')?tObj.target:tObj.source;
+                        newSource = convert.xml2js('<source>' +sourceObj + '</source>').elements[0];
+                    }
+                });
+                if(elem.elements.find(el => el.name === 'source') == undefined){
+                    if(newSource)
+                        elem.elements.unshift(newSource);
+                }else{
+                    elem.elements.forEach(function(el, index) {
+                        if(elem.elements[index].name === 'source'){
+                            elem.elements[index] = newSource;
+                        }
+                    });
+                }
+            }
+        });
     }
-    return convert.js2xml(xlfStruct, {
+
+
+    return xmlWalker.js2xml( {
         spaces: 4,
         // https://github.com/nashwaan/xml-js/issues/26#issuecomment-355620249
         attributeValueFn: function (value) {
             return value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
     });
-
 }
 
 
-async function reportkeysTrnslObjects(input, trnslObj) {
-    const xlfStruct = convert.xml2js(input, {alwaysChildren: true});
-    const elementsQueue = [];
-    const idsInXlf = [];
-    elementsQueue.push(xlfStruct);
+async function reportkeysTrnslObjects(input, trnslObj,mode) {
+    xmlWalker.xml2js(input);
 
-    while (elementsQueue.length) {
-        const elem = elementsQueue.shift();
+    const idsInXlf = xmlWalker.walk(function(elem){
         if (elem.name === 'trans-unit') {
-            const id = elem.attributes['id'];
-            idsInXlf.push(id);
-            continue;
+            return elem.attributes['id'];
         }
-        if (elem && elem.elements && elem.elements.length) {
-            elementsQueue.push(...elem.elements);
+        return false;
+    });
+
+
+    if(mode=='file'){
+        return idsInXlf;
+    }
+    const returnIDs =[];
+    for(var i = 0; i < trnslObj.length; i++) {
+        if(mode=='missing') {
+            if (trnslObj[i].id && !idsInXlf.includes(trnslObj[i].id)) {
+                returnIDs.push(trnslObj[i].id);
+            }
+        }
+        else if(mode=='source'||mode=='all'){
+            returnIDs.push(trnslObj[i].id);
         }
     }
-    elementsQueue.length = 0
-    elementsQueue.push(xlfStruct);
-    const missingIDs = [];
-    while (elementsQueue.length) {
-        const elem = elementsQueue.shift();
-        if (elem.name === 'body') {
-            trnslObj.forEach(tObj => {
-                if (tObj.id && !idsInXlf.includes(tObj.id)) {
-                    missingIDs.push(tObj.id);
-                }
-            });
-        }
-        if (elem && elem.elements && elem.elements.length) {
-            elementsQueue.push(...elem.elements);
-        }
+    if(mode=='all'){
+        //returnIDs.concat(returnIDs).unique();
+        return [...new Set([...returnIDs ,...idsInXlf])];
     }
-    return missingIDs;
+
+    return returnIDs;
 }
 
 function createJsDomElement(tObj) {

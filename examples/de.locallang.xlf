@@ -6,6 +6,11 @@
                 <source>name</source>
                 <target>name</target>
             </trans-unit>
+
+            <trans-unit id="name22">
+                <source>name</source>
+                <target>name</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

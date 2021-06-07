@@ -1,0 +1,13 @@
+# Can ignore specific files
+.DS_Store
+._.DS_Store
+
+.gitignore
+.npmignore
+.idead
+.DS_Store
+
+# phpstorm project file
+.idea
+.project
+.settings

@@ -1,7 +1,7 @@
 {
   "name": "xlfknife",
-  "version": "0.0.3",
-  "description": "A command-line utility to import/merge or export *.xlf files in XLF, CSV, PO, JSON, PHP ....",
+  "version": "0.0.4",
+  "description": "A command-line utility to import/merge or export *.xlf files from/to XLF, CSV, PO, JSON, PHP ....",
   "main": "./src/index.js",
   "scripts": {
     "test": "mocha",
@@ -23,9 +23,9 @@
     "po",
     "csv",
     "json",
+    "convert",
     "language",
     "multilingual"
-
   ],
   "author": "Jörg Hammel",
   "license": "MIT",
@@ -40,9 +40,9 @@
   "dependencies": {
     "bottleneck": "2.19.5",
     "chalk": "^2.4.1",
+    "csv-string": "4.0.1",
     "xml-js": "1.6.11",
-    "yargs": "15.3.1",
-    "csv-string": "4.0.1"
+    "yargs": "15.3.1"
   },
   "devDependencies": {
     "chai": "4.1.2",

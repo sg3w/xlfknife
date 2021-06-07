@@ -1,6 +1,6 @@
 const convert = require('xml-js');
 const log = require('./helpers/log');
-
+const XmlWalker = require('./class/XmlWalker.js');
 /**
  * Convert *.xlf File to an internal data object
  *
@@ -9,35 +9,28 @@ const log = require('./helpers/log');
  * @returns {string}
  */
 async function convertXlf2Object(input) {
-    const xlfStruct = convert.xml2js(input);
-    const elementsQueue = [];
-    const targetsQueue = [];
-    const exportData = [];
-    elementsQueue.push(xlfStruct);
-    while (elementsQueue.length) {
-        const elem = elementsQueue.shift();
+    const xmlWalker = new XmlWalker(input);
+    const data = xmlWalker.walk(function(elem){
         if (elem.name === 'trans-unit') {
-            const id = elem.attributes['id'];
             const source = elem.elements.find(el => el.name === 'source');
             const target = elem.elements.find(el => el.name === 'target');
-            var targetValue = target ? xmlElement2String(target) : '';
-            var sourceValue = source ? xmlElement2String(source) : '';
-            exportData.push({id:id,source:sourceValue,target:targetValue});
-            continue;
+            return {
+                id:elem.attributes['id'],
+                source:source ? xmlElement2String(source) : '',
+                target:target ? xmlElement2String(target) : ''
+            };
         }
-        if (elem && elem.elements && elem.elements.length) {
-            elementsQueue.push(...elem.elements)
-        };
-    }
-    return exportData;
+        return false;
+    });
+    return data;
 }
 
 function xmlElement2String(xmlNode){
-    var sourceValue='';
+    let sourceValue='';
     if(xmlNode.elements){
         xmlNode.elements.forEach(el => {
-            var options = {compact: false, ignoreComment: false, spaces: 4};
-            var elements = {elements:[el]}
+            const options = {compact: false, ignoreComment: false, spaces: 4};
+            const elements = {elements:[el]}
             sourceValue += convert.json2xml(elements,options);
         });
     }
