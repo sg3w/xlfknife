@@ -1,6 +1,6 @@
 {
   "name": "xlfknife",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A command-line utility to import/merge or export *.xlf files from/to XLF, CSV, PO, JSON, PHP ....",
   "main": "./src/index.js",
   "scripts": {
