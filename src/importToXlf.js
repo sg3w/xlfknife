@@ -1,7 +1,7 @@
 const convert = require('xml-js');
 const log = require('./helpers/log');
 const date = require('./helpers/date');
-const XmlWalker = require('./class/XmlWalker.js');
+const XmlWalker = require('./class/xmlWalker.js');
 const xmlWalker = new XmlWalker();
 /**
  * Translates an .xlf file from one language to another

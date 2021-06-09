@@ -1,6 +1,6 @@
 const convert = require('xml-js');
 const log = require('./helpers/log');
-const XmlWalker = require('./class/XmlWalker.js');
+const XmlWalker = require('./class/xmlWalker.js');
 /**
  * Convert *.xlf File to an internal data object
  *
